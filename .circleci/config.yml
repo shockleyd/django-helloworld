@@ -4,7 +4,7 @@
 #
 version: 2
 jobs:
-  build:
+  build_test:
     docker:
       # specify the version you desire here
       # use `-browsers` prefix for selenium tests, e.g. `3.6.1-browsers`
@@ -53,4 +53,44 @@ jobs:
       - store_artifacts:
           path: test-reports
           destination: test-reports
-          
+
+  deploy:
+    docker:
+      - image: google/cloud-sdk
+    steps:
+      - checkout
+      - run:
+          name: Setup Google Cloud SDK
+          command: |
+            apt-get install -qq -y gettext
+            echo $GCLOUD_SERVICE_KEY > ${HOME}/gcloud-service-key.json
+            gcloud auth activate-service-account --key-file=${HOME}/gcloud-service-key.json
+            gcloud --quiet config set project dataquest-cd-project
+            gcloud --quiet config set compute/zone us-central1
+            gcloud --quiet container clusters get-credentials dataquest-cd-project-1
+      - setup_remote_docker
+      - run:
+          name: Docker build and push
+          command: |
+            docker build -t django-helloworld .
+            docker tag django-helloworld eu.gcr.io/dataquest-cd-project/django-helloworld:${CIRCLE_SHA1}
+            gcloud auth print-access-token | docker login -u oauth2accesstoken --password-stdin https://eu.gcr.io
+            docker push eu.gcr.io/dataquest-cd-project/django-helloworld:${CIRCLE_SHA1}
+      - run:
+          name: Deploy to Kubernetes
+          command: |
+            envsubst < ${HOME}/project/k8s.yml > ${HOME}/k8s_with_env.yml
+            kubectl apply -f ${HOME}/k8s_with_env.yml
+            kubectl rollout status deployment/django-helloworld
+
+workflows:
+  version: 2
+  build_test_deploy:
+    jobs:
+      - build_test
+      - deploy:
+          requires:
+            - build_test
+          filters:
+            branches:
+              only: master

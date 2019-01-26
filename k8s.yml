@@ -1,0 +1,36 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: django-helloworld
+spec:
+  selector:
+    app: django-helloworld
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 8000
+  type: LoadBalancer
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: django-helloworld
+  labels:
+    app: django-helloworld
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: django-helloworld
+  template:
+    metadata:
+      labels:
+        app: django-helloworld
+    spec:
+      containers:
+      - name: django-helloworld
+        image: eu.gcr.io/dataquest-cd-project/django-helloworld:${CIRCLE_SHA1}
+        ports:
+        - name: http
+          containerPort: 8000
+          protocol: TCP
