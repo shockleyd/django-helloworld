@@ -88,6 +88,15 @@ but for many applications we would require manual approval, or schedule nightly
 deploys in order to minimize risk of interrupting service for users where a very
 high level of reliability is required.
 
+### Docker image tags
+
+We use the commit hash as the docker image tag, because it's the simplest solution.
+In case we decide we want more human-readable tags, it might make sense to switch to
+using the commit timestamp (or a combination of the commit hash and timestamp).
+Other ideas could work too, like requiring developers to update a semver version
+in some way, and using this to tag, but an automated solution is easier and less
+error-prone.
+
 ### Build job
 
 The build job configuration is (with very minor changes) generated automatically by CircleCI
