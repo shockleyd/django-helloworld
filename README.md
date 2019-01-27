@@ -1,14 +1,14 @@
 ## Introduction
 
 This repository contains a simple implementation of a CI/CD pipeline using
-[CircleCI](https://circleci.com), and deploying to a GCP Kubernetes cluster,
+[CircleCI](https://circleci.com) to deploy to a GCP Kubernetes cluster,
 which is managed via [Terraform](https://www.terraform.io/).
 
 ## Demo project
 
 The demo application is created following the
 [Django for beginners tutorial](https://djangoforbeginners.com/hello-world/).
-The only deviation from the tutorial, is that this project uses `virtualenv`
+The only deviation from the tutorial is that this project uses `virtualenv`
 rather than `pipenv` for dependency management, and consequently the project
 contains a `requirements.txt` file instead of `Pipfile`.
 
@@ -24,7 +24,7 @@ The Dockerfile configuration is nearly identical to
 [docker's example Django Dockerfile](https://docs.docker.com/compose/django/), with
 the addition of a `CMD` statement, which runs the application via the Django development
 server. In a real production application, we would likely use `gunicorn`, `wsgi`, or similar,
-but in order to focus on the CI/CD pipeline, we use the simplest approach to run the demo app.
+but in order to focus on the CI/CD pipeline, I've used the simplest approach to run the demo app.
 
 ## GCP K8s cluster configuration
 
@@ -73,29 +73,29 @@ using GCP Kubernetes.
 ## CircleCI access to GCloud
 
 In order to deploy to the Google Cloud Kubernetes Engine, CircleCI needs
-access to the Google Cloud account. A service account is manually created
-for CircleCI, with the `container.developer` role, and the access key is
-stored in an environment variable in CircleCI.
+access to the Google Cloud account. I manually created a service account
+for CircleCI, with the `container.developer` role, and stored the access key
+in an environment variable in CircleCI.
 
 ## CI/CD pipeline
 
-We use CircleCI to implement continuous integration and deployment.
-We do not require manual approval for deploys; a deploy happens automatically
+I've used CircleCI to implement continuous integration and deployment.
+I do not require manual approval for deploys; a deploy happens automatically
 for every `master` branch commit. The decision whether to require manual approval
 depends primarily on the specific application, and the level of risks associated
 with a deployment. Continuous deployment (that is, automatic) is a good default,
-but for many applications we would require manual approval, or schedule nightly
+but for some applications we would require manual approval, or schedule nightly
 deploys in order to minimize risk of interrupting service for users where a very
 high level of reliability is required.
 
 ### Docker image tags
 
-We use the commit hash as the docker image tag, because it's the simplest solution.
+I've used the commit hash as the docker image tag, because it's the simplest solution.
 In case we decide we want more human-readable tags, it might make sense to switch to
 using the commit timestamp (or a combination of the commit hash and timestamp).
 Other ideas could work too, like requiring developers to update a semver version
-in some way, and using this to tag, but an automated solution is easier and less
-error-prone.
+in some way, and using this to tag, which would give a very meaningful tag, but an
+automated solution is easier to use and less error-prone.
 
 ### Build job
 
@@ -108,7 +108,7 @@ on project creation. It uses the CircleCI python3.6 docker image, and:
 * Run tests (using `manage.py test`)
 * Save dependencies to cache
 
-### Deploy job:
+### Deploy job
 
 * checkout
 * Setup Google Cloud SDK
