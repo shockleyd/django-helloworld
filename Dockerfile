@@ -1,4 +1,4 @@
-FROM python:3
+FROM python:3.6
 
 # borrowed from the docker example: https://docs.docker.com/compose/django/
 ENV PYTHONUNBUFFERED 1
