@@ -67,7 +67,7 @@ jobs:
             gcloud auth activate-service-account --key-file=${HOME}/gcloud-service-key.json
             gcloud --quiet config set project dataquest-cd-project
             gcloud --quiet config set compute/zone us-central1
-            gcloud --quiet container clusters get-credentials dataquest-cd-project-1
+            gcloud --quiet container clusters get-credentials dataquest-cd-project-production
       - setup_remote_docker
       - run:
           name: Docker build and push
