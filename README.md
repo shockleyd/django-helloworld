@@ -39,12 +39,12 @@ with the default values for a GCP K8s cluster, with two notable exceptions:
 * the cluster is configured with basic authentication and client certificate disabled, for
 improved security
 
-To keep things simple, we use the default network, and manually manage the
+To keep things simple, I've used the default network, and manually managed the
 service accounts.
 
 ### Terraform config organization
 
-Since we are only configuring a single resource (the K8s cluster), it would be
+Since I am only configuring a single resource (the K8s cluster), it would be
 quite reasonable to keep all the Terraform config in a single file. However, for
 ease of future improvements (such as adding a staging environment or other GCP services),
 the Terraform configuration is organized into a module, and uses a variable file for
@@ -53,7 +53,7 @@ configuration.
 ### Terraform config deployment
 
 Because of time constraints, the Terraform config is applied manually from a
-local environment. Ideally we would also add continuous delivery (with manual
+local environment. Ideally I would also add continuous delivery (with manual
 approval) for the Terraform config, likely using CircleCI, similarly to
 [this example](https://github.com/fedekau/terraform-with-circleci-example/blob/staging/.circleci/config.yml).
 
@@ -65,7 +65,7 @@ demo application. It is modified from
 
 ## Docker registry
 
-We use the Google Cloud [Container Registry](https://cloud.google.com/container-registry/)
+I use the Google Cloud [Container Registry](https://cloud.google.com/container-registry/)
 to store the docker images we build in order to deploy to Kubernetes. Other
 registry solutions exist, but this is the simplest solution considering we are
 using GCP Kubernetes.
